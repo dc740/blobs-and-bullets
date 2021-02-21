@@ -11,6 +11,25 @@ edition = "2018"
 [lib]
 crate-type = ["cdylib"]
 
+[package.metadata.wasm-pack.profile.dev]
+# Should `wasm-opt` be used to further optimize the wasm binary generated after
+# the Rust compiler has finished? Using `wasm-opt` can often further decrease
+# binary size or do clever tricks that haven't made their way into LLVM yet.
+#
+# Configuration is set to `false` by default for the dev profile, but it can
+# be set to an array of strings which are explicit arguments to pass to
+# `wasm-opt`. For example `['-Os']` would optimize for size while `['-O4']`
+# would execute very expensive optimizations passes
+wasm-opt = false
+
+[package.metadata.wasm-pack.profile.profiling]
+wasm-opt = false
+
+# `wasm-opt` is on by default in for the release profile, but it can be
+# disabled by setting it to `false`
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = false
+
 [profile.release]
 # This makes the compiled code faster and smaller, but it makes compiling slower,
 # so it's only enabled in release mode.
@@ -23,22 +42,22 @@ default = ["wee_alloc"]
 [dependencies]
 # The `wasm-bindgen` crate provides the bare minimum functionality needed
 # to interact with JavaScript.
-wasm-bindgen = { version ="0.2.45", features = ["serde-serialize"] }
-js-sys = "0.3.39"
-wasm-bindgen-futures = "0.4.12"
-serde = { version = "1.0.106", features = ["derive"] }
-serde_derive = "1.0.106"
-futures = "0.3.4"
+wasm-bindgen = { version = "0.2.70", features = ["serde-serialize"] }
+js-sys = "0.3.47"
+wasm-bindgen-futures = "0.4.20"
+serde = { version = "1.0.123", features = ["derive"] }
+serde_derive = "1.0.123"
+futures = "0.3.12"
 
 # `wee_alloc` is a tiny allocator for wasm that is only ~1K in code size
 # compared to the default allocator's ~10K. However, it is slower than the default
 # allocator, so it's not enabled by default.
-wee_alloc = { version = "0.4.2", optional = true }
+wee_alloc = { version = "0.4.5", optional = true }
 
 # The `web-sys` crate allows you to interact with the various browser APIs,
 # like the DOM.
 [dependencies.web-sys]
-version = "0.3.39"
+version = "0.3.47"
 features = [
 "console", "Window", "Document", "Navigator", "Element", "Node", "HtmlCanvasElement", "HtmlImageElement", "CanvasRenderingContext2d",
 "Headers", "Request", "RequestInit", "RequestMode", "Response", "Blob", "Url", "Gamepad", "GamepadButton", "GamepadEvent"
@@ -53,7 +72,7 @@ features = [
 
 # These crates are used for running unit tests.
 [dev-dependencies]
-wasm-bindgen-test = "0.2.45"
-futures = "0.3.4"
-js-sys = "0.3.39"
-wasm-bindgen-futures = "0.4.12"
+wasm-bindgen-test = "0.3.20"
+futures = "0.3.12"
+js-sys = "0.3.47"
+wasm-bindgen-futures = "0.4.20"
